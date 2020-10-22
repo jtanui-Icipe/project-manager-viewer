@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  
+<!-- Mirrored from dashkit.goodthemes.co/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 21 Jun 2020 07:57:15 GMT -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
+
+    <!-- Libs CSS -->
+    <link rel="stylesheet"  href="assets/fonts/feather/feather.css" />
+    <link rel="stylesheet" href="assets/libs/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="assets/libs/quill/dist/quill.core.css" />
+    <link rel="stylesheet" href="assets/libs/highlightjs/styles/vs2015.css" />
+
+    <!-- Map -->
+    <link href="../api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" rel="stylesheet" />
+
+    <!-- Theme CSS -->
+      
+    <link rel="stylesheet" href="assets/css/theme.min.css" id="stylesheetLight">
+    <link rel="stylesheet" href="assets/css/theme-dark.min.css" id="stylesheetDark">
+    <link rel="stylesheet" href="assets/css/toastr.css">
+
+    <style>
+      body {
+        display: none;
+      }
+
+    </style>
+    
+    <!-- Title -->
+    <title>Icipe</title>
+
+  </head>
+  <body class="d-flex align-items-center bg-auth border-top border-top-2 border-primary">
+    
+    <!-- CONTENT
+    ================================================== -->
+    <div class="container">
+      <div class="row justify-content-center">
+        
+        <div class="col-12 col-md-5 col-xl-4 my-5">
+          
+          <div class="justify-content-center">
+            <img src="assets/img/icipe_logo.jpg" style="width: 20em; height: 10em;" alt="...">
+          </div>
+          <!-- Heading -->
+          <h1 class="display-4 text-center mb-3">
+             Project manager viewer
+          </h1>
+          
+          <!-- Subheading -->
+          <p class="text-muted text-center mb-5" id="user-signin">
+            Authenticating..
+          </p>
+          
+          <div class="d-flex justify-content-center">
+            <div class="mb-2 spinner-grow text-danger" role="status">
+              <span class="sr-only mt-2">Loading...</span>
+            </div>
+           </div>
+          
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+
+    <!-- JAVASCRIPT
+    ================================================== -->
+    <!-- Libs JS -->
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/%40shopify/draggable/lib/es5/draggable.bundle.legacy.js"></script>
+    <script src="assets/libs/autosize/dist/autosize.min.js"></script>
+    <script src="assets/libs/chart.js/dist/Chart.min.js"></script>
+    <script src="assets/libs/dropzone/dist/min/dropzone.min.js"></script>
+    <script src="assets/libs/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="assets/libs/highlightjs/highlight.pack.min.js"></script>
+    <script src="assets/libs/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+    <script src="assets/libs/list.js/dist/list.min.js"></script>
+    <script src="assets/libs/quill/dist/quill.min.js"></script>
+    <script src="assets/libs/select2/dist/js/select2.full.min.js"></script>
+    <script src="assets/libs/chart.js/Chart.extension.js"></script>
+
+    <!-- Map -->
+    <script src='../api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+
+    <!-- Theme JS -->
+    <script src="assets/js/theme.min.js"></script>
+    <script src="assets/js/dashkit.min.js"></script>
+    <script src="assets/js/toastr.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script>
+
+     $(".spinner-grow").hide();
+     window.localStorage.removeItem('Permission');
+     window.localStorage.removeItem('CurrentProject');
+     window.localStorage.removeItem('CurrentProjectName');
+
+     
+
+      var user_signin = new Vue({
+        data: {
+          name: 'Vue.js'
+        },
+        // define methods under the `methods` object
+        methods: {
+          authenticate: function (event) {
+
+           // const email = $("#email").val();
+           // const password = $("#password").val();
+
+            const email = 'odkuser@odkuser.com';
+            const password = 'Arc10.6GIS';
+
+            $(".spinner-grow").show();
+
+            authenticate_user(email, password)
+
+          }
+        }
+      })
+
+      function authenticate_user(email, password){
+
+        const todays_date = new Date().toISOString()
+
+        axios.post('http://localhost:3000/user_authenticate', {
+          email: ''+ email +'',
+          password: ''+ password +''
+        })
+        .then(function (response) {
+          console.log(response.data);
+
+          if(response.data.code == 401.2){
+
+            toastr.warning('Could not authenticate with the provided credentials, please contact administrator');
+            $(".spinner-grow").hide();
+
+          } else {
+
+              var token = response.data.token;
+              var expiresAt = response.data.expiresAt;
+
+              window.localStorage.setItem('Token', token);
+              window.localStorage.setItem('ExpireDate', expiresAt);
+
+              var ExpireDate = window.localStorage.getItem("ExpireDate");
+
+              if(todays_date > ExpireDate){
+
+                toastr.warning('Your session has expired, try login login again');
+                window.localStorage.removeItem("Token"); 
+                window.localStorage.removeItem("ExpireDate"); 
+
+              } else {
+
+                get_current_user()
+
+                window.localStorage.setItem('Permission', "0");
+                
+
+              }
+
+          }
+
+
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      }
+
+     async function get_current_user(){
+
+        var Token = window.localStorage.getItem("Token");
+
+          try {
+
+            const response = await axios.get('http://localhost:3000/current_user_details/'+ Token +'');
+            
+
+            window.localStorage.setItem('DisplayName', response.data.displayName);
+            window.localStorage.setItem('UserId', response.data.id);
+
+            window.location.replace("/home");
+
+          } catch (error) {
+            toastr.warning('Error: ' + error + '. Please contact Administrator');
+        }
+
+      }
+      
+      user_signin.authenticate();
+
+    </script>
+
+
+  </body>
+
+<!-- Mirrored from dashkit.goodthemes.co/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 21 Jun 2020 07:57:15 GMT -->
+</html>
