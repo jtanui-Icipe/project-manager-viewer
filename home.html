@@ -3301,7 +3301,7 @@
             
             const Token = window.localStorage.getItem("Token");
            // const CurrentProject = window.localStorage.getItem("CurrentProject");
-            axios.get('https://odk-pmv.herokuapp.com/get_all_projects_forms/'+ project_id +'/'+ Token +'').then(response => {
+            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects_forms/'+ project_id +'/'+ Token +'').then(response => {
               
              
               $("#project_name_title").html(project_name)
@@ -3331,7 +3331,7 @@
             
             const Token = window.localStorage.getItem("Token");
            // const CurrentProject = window.localStorage.getItem("CurrentProject");
-            axios.get('https://odk-pmv.herokuapp.com/get_all_projects_collectors/'+ project_id +'/'+ Token +'').then(response => {
+            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects_collectors/'+ project_id +'/'+ Token +'').then(response => {
               
               console.log(response.data);
               window.localStorage.setItem('TotalProjectCollectors', response.data.length);
@@ -3375,7 +3375,7 @@
             const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
 
 
-           /* axios.get('https://odk-pmv.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/' + window.localStorage.getItem('CurrentProjectForm') +'/'+ Token +'')
+           /* axios.get('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/' + window.localStorage.getItem('CurrentProjectForm') +'/'+ Token +'')
                     .then(function (response) {
                       console.log(response.data);
               }).catch(function (error) {
@@ -3383,7 +3383,7 @@
               }); */
 
 
-            axios.get('https://odk-pmv.herokuapp.com/get_all_project_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
+            axios.get('https://odk-project-viewer.herokuapp.com/get_all_project_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
               var projects_data = response.data;
               var collected_data = projects_data.length;
               this.gallery_details = response.data;
@@ -3456,7 +3456,7 @@
                       axios.defaults.headers.common['Authorization'] = authHeader;
 
                       
-                      await axios.get('https://odk-pmv.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'')
+                      await axios.get('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'')
                         .then(function (response) {
 
                          // console.log(response.data);
@@ -3471,7 +3471,7 @@
                       });
 
 
-                    //  let req = await fetch('https://odk-pmv.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'');
+                    //  let req = await fetch('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'');
                        
                         // 
                          
@@ -3549,7 +3549,7 @@
 
             const Token = window.localStorage.getItem("Token");
 
-            axios.get('https://odk-pmv.herokuapp.com/get_all_projects/'+ Token +'').then(response => {
+            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects/'+ Token +'').then(response => {
               this.projects = response.data
             })
             
@@ -3720,7 +3720,7 @@
 
 
       
-      axios.get('https://odk-pmv.herokuapp.com/get_all_project_map_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
+      axios.get('https://odk-project-viewer.herokuapp.com/get_all_project_map_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
               var projects_data = response.data;
               var collected_data = projects_data.length;
 

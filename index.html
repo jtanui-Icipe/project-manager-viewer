@@ -128,7 +128,7 @@
 
         const todays_date = new Date().toISOString()
 
-        axios.post('https://odk-pmv.herokuapp.com/user_authenticate', {
+        axios.post('https://odk-project-viewer.herokuapp.com/user_authenticate', {
           email: ''+ email +'',
           password: ''+ password +''
         })
@@ -182,7 +182,7 @@
 
           try {
 
-            const response = await axios.get('https://odk-pmv.herokuapp.com/current_user_details/'+ Token +'');
+            const response = await axios.get('https://odk-project-viewer.herokuapp.com/current_user_details/'+ Token +'');
             
 
             window.localStorage.setItem('DisplayName', response.data.displayName);
