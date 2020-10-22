@@ -57,7 +57,7 @@ app.get('/home', function(req, res) {
 });
 
 //Get GeoJson as API
-app.post('/user_authenticate',urlencodedParser, function (req, res) {
+app.post('/user_authenticate',urlencodedParser, cors(), function (req, res) {
   
     const email = req.body.email;
     const password = req.body.password;
