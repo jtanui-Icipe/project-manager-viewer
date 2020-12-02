@@ -163,7 +163,7 @@
 
         const todays_date = new Date().toISOString()
 
-        axios.post('http://localhost:3000/user_authenticate', {
+        axios.post('https://odk-project-viewer.herokuapp.com/user_authenticate', {
           email: ''+ email +'',
           password: ''+ password +''
         })
@@ -217,7 +217,7 @@
 
           try {
 
-            const response = await axios.get('http://localhost:3000/current_user_details/'+ Token +'');
+            const response = await axios.get('https://odk-project-viewer.herokuapp.com/current_user_details/'+ Token +'');
             
 
             window.localStorage.setItem('DisplayName', response.data.displayName);
