@@ -41,7 +41,7 @@
     <div class="container">
       <div class="row justify-content-center">
         
-        <div class="col-12 col-md-5 col-xl-4 my-5">
+        <div class="col-12 col-md-6 col-xl-4 my-5">
           
           <div class="justify-content-center">
             <img src="assets/img/icipe_logo.jpg" style="width: 20em; height: 10em;" alt="...">
@@ -50,11 +50,49 @@
           <h1 class="display-4 text-center mb-3">
              Project manager viewer
           </h1>
-          
+         
           <!-- Subheading -->
-          <p class="text-muted text-center mb-5" id="user-signin">
-            Authenticating..
-          </p>
+          <div>
+            <p>Please Login with the same email and password provided by the administrator.</p>
+            <!-- Email address -->
+            <div class="form-group">
+
+              <!-- Label -->
+              <label>Email Address</label>
+              <!-- Input -->
+              <input type="email" id="email" class="form-control" placeholder="name@address.com">
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <div class="row">
+                <div class="col">  
+                  <!-- Label -->
+                  <label>Password</label>
+                </div>
+              </div> <!-- / .row -->
+              <!-- Input group -->
+              <div class="input-group input-group-merge">
+                <!-- Input -->
+                <input type="password" id="password" class="form-control form-control-appended" placeholder="Enter your password">
+
+                <!-- Icon -->
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <i class="fe fe-eye"></i>
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            <div id="example-2">
+                <!-- Submit -->
+                <button  v-on:click="authenticate" class="btn btn-lg btn-block btn-primary mb-3">
+                  Sign in
+                </button>
+            </div>
+          </div>
           
           <div class="d-flex justify-content-center">
             <div class="mb-2 spinner-grow text-danger" role="status">
@@ -97,21 +135,20 @@
      window.localStorage.removeItem('CurrentProject');
      window.localStorage.removeItem('CurrentProjectName');
 
-     
-
-      var user_signin = new Vue({
+     var example2 = new Vue({
+        el: '#example-2',
         data: {
           name: 'Vue.js'
         },
         // define methods under the `methods` object
         methods: {
           authenticate: function (event) {
+            
+            const email = $("#email").val();
+            const password = $("#password").val();
 
-           // const email = $("#email").val();
-           // const password = $("#password").val();
-
-            const email = 'odkuser@odkuser.com';
-            const password = 'Arc10.6GIS';
+           // const email = 'odkuser@odkuser.com';
+           // const password = 'Arc10.6GIS';
 
             $(".spinner-grow").show();
 
@@ -121,11 +158,12 @@
         }
       })
 
+
       function authenticate_user(email, password){
 
         const todays_date = new Date().toISOString()
 
-        axios.post('https://odk-project-viewer.herokuapp.com/user_authenticate', {
+        axios.post('http://localhost:3000/user_authenticate', {
           email: ''+ email +'',
           password: ''+ password +''
         })
@@ -179,7 +217,7 @@
 
           try {
 
-            const response = await axios.get('https://odk-project-viewer.herokuapp.com/current_user_details/'+ Token +'');
+            const response = await axios.get('http://localhost:3000/current_user_details/'+ Token +'');
             
 
             window.localStorage.setItem('DisplayName', response.data.displayName);
@@ -193,7 +231,7 @@
 
       }
       
-      user_signin.authenticate();
+      //user_signin.authenticate();
 
     </script>
 

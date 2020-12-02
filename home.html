@@ -2946,7 +2946,7 @@
         <div style="display:none" class="image-blur container-fluid jumbotron jumbotron-fluid mt-7 project-not-authenticated">
           <div class="container">
             <h1 class="display-4"> <span id="DisplyName"></span></h1>
-            <p class="lead">Select a project on the left panel to proceed, if you are not assigned to any project you will not be able to view, in that case please contact administrator data-collect-support@icipe.org.</p>
+            <p class="lead">Select a project on the left panel to proceed, if you are not assigned to any project you will not be able to view, in that case please contact administrator <b>me-datacollect-support@icipe.org</b>.</p>
           </div>
         </div>
         <div style="display:none" class="container-fluid project-authenticated">
@@ -3081,9 +3081,9 @@
                                 </h4>
 
                                 <!-- Button -->
-                                <a target="_blank" href="https://odk-server.icipe.org/v1/projects/2/forms/SCLAMP_activity_monitoring_form_version_1.7/submissions.csv.zip" class="btn btn-sm btn-white ">
+                                <button id="save_all_data" class="btn btn-sm btn-white ">
                                   Download All Data
-                                </a>
+                                </button>
                                 &nbsp;&nbsp;
                                 
 
@@ -3249,6 +3249,13 @@
           console.log(error);
         });*/
 
+        console.log(document.cookie);
+
+        function openWindowReload(link) {
+				var href = link.href;
+				window.open(href,'_blank');
+				document.location.reload(true)
+			}
         
         $('.project-authenticated').css('display','none');
         $('.project-not-authenticated').css('display','none');
@@ -3274,11 +3281,43 @@
 
         });
 
+        $("#save_all_data").click(function(){
+
+          const Token = window.localStorage.getItem("Token");
+          const CurrentProject = window.localStorage.getItem("CurrentProject");
+          const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
+
+           const method = 'GET';
+           const url = 'http://localhost:3000/download_all_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'';
+
+           axios.request({url,method,headers: { 'Content-Type': 'application/x-www-form-urlencoded'},responseType: 'blob'}).then(({ data }) => {
+
+                const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+
+                const link = document.createElement('a');
+
+                link.href = downloadUrl;
+
+                link.setAttribute('download', 'file.zip'); //any other extension
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                link.remove();
+
+              });  
+
+            
+
+
+           }); 
+
         $("#logout").click(function(){
 
           window.localStorage.clear();
 
-          window.location.replace("index.html");
+          window.location.replace("/");
 
         }); 
 
@@ -3300,7 +3339,7 @@
             
             const Token = window.localStorage.getItem("Token");
            // const CurrentProject = window.localStorage.getItem("CurrentProject");
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects_forms/'+ project_id +'/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_projects_forms/'+ project_id +'/'+ Token +'').then(response => {
               
              
               $("#project_name_title").html(project_name)
@@ -3330,7 +3369,7 @@
             
             const Token = window.localStorage.getItem("Token");
            // const CurrentProject = window.localStorage.getItem("CurrentProject");
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects_collectors/'+ project_id +'/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_projects_collectors/'+ project_id +'/'+ Token +'').then(response => {
               
               console.log(response.data);
               window.localStorage.setItem('TotalProjectCollectors', response.data.length);
@@ -3374,7 +3413,7 @@
             const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
 
 
-           /* axios.get('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/' + window.localStorage.getItem('CurrentProjectForm') +'/'+ Token +'')
+           /* axios.get('http://localhost:3000/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/' + window.localStorage.getItem('CurrentProjectForm') +'/'+ Token +'')
                     .then(function (response) {
                       console.log(response.data);
               }).catch(function (error) {
@@ -3382,7 +3421,7 @@
               }); */
 
 
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_project_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_project_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
               var projects_data = response.data;
               var collected_data = projects_data.length;
               this.gallery_details = response.data;
@@ -3455,7 +3494,7 @@
                       axios.defaults.headers.common['Authorization'] = authHeader;
 
                       
-                      await axios.get('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'')
+                      await axios.get('http://localhost:3000/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'')
                         .then(function (response) {
 
                          // console.log(response.data);
@@ -3470,7 +3509,7 @@
                       });
 
 
-                    //  let req = await fetch('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'');
+                    //  let req = await fetch('http://localhost:3000/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'');
                        
                         // 
                          
@@ -3548,7 +3587,7 @@
 
             const Token = window.localStorage.getItem("Token");
 
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_projects/'+ Token +'').then(response => {
               this.projects = response.data
             })
             
@@ -3715,20 +3754,14 @@
 
       const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
 
-     
-
-
-      
-      axios.get('https://odk-project-viewer.herokuapp.com/get_all_project_map_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
+      axios.get('http://localhost:3000/get_all_project_map_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
               var projects_data = response.data;
               var collected_data = projects_data.length;
 
               //$( ".data_collected" ).html(collected_data);
               //$(".number_collectors").html(window.localStorage.getItem("TotalProjectCollectors"));
 
-              
-              
-              
+            
               $.each(projects_data[0], function (key, value) {
 
 

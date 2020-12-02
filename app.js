@@ -56,6 +56,47 @@ app.get('/home', function(req, res) {
   res.sendFile(path.join(__dirname + '/home.html'));
 });
 
+app.get('/terms_condition', function(req, res) {
+  res.sendFile(path.join(__dirname + '/profile.html'));
+});
+
+app.get('/download_all_data/:project/:project_form/:token',cors(), function (req, res) {
+  
+  const token = req.params.token;
+  const project = req.params.project;
+  const project_form = req.params.project_form;
+
+
+  var options = {
+    'method': 'GET',
+    'url': 'https://odk-server.icipe.org/v1/projects/'+ project +'/forms/'+ project_form +'/submissions.csv.zip',
+    'headers': {
+      'Authorization': 'Bearer '+ token +''
+    }
+  };
+
+
+  request(options, function (error, response) {
+
+    if (error) throw new Error(error);
+    //res.send(response.body);
+
+    res.end(response.body);
+
+    //console.log('https://odk-server.icipe.org/v1/projects/'+ project +'/forms/'+ project_form +'/submissions.csv.zip');
+
+   // const downloadName = ''+ project_form +' .zip';     
+    //const data = zip.toBuffer();
+    //res.set('Content-Type','application/octet-stream');
+    //res.set('Content-Disposition',`attachment; filename=${downloadName}`);
+   // res.set('Content-Length',data.length);
+   // res.download(downloadName);
+
+
+  });
+});
+
+
 //Get GeoJson as API
 app.post('/user_authenticate',urlencodedParser, cors(), function (req, res) {
   
@@ -206,11 +247,13 @@ app.get('/get_all_project_map_data/:project_id/:form_id/:token', cors(), functio
 
          // console.log(JSON.parse(response.body.value));
 
-         var json_obj = JSON.parse(response.body);
-         console.log();
-         var json_obj2 = json_obj.value.length;
+         let json_obj2;
+         var objj = [];
 
-          var objj = [];
+         var json_obj = JSON.parse(response.body);
+         json_obj2 = json_obj.value.length;
+
+         if(json_obj2 != 0){
 
          for(var i = 0; i < json_obj2; i++) {
           var obj = json_obj.value[i];
@@ -225,10 +268,9 @@ app.get('/get_all_project_map_data/:project_id/:form_id/:token', cors(), functio
           
 
          }
+         }
 
-   
-      
-          res.send(objj);
+         res.send(objj);
 
       }
       
