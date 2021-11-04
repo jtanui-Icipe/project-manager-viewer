@@ -4,6 +4,7 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-control" content="public">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
 
@@ -13,10 +14,10 @@
     <link rel="stylesheet" href="assets/libs/quill/dist/quill.core.css" />
     <link rel="stylesheet" href="assets/libs/highlightjs/styles/vs2015.css" />
     <link rel="stylesheet" href="assets/libs/datatables/datatables.min.css" />
-    <link rel="stylesheet" href="https://js.arcgis.com/4.12/esri/themes/light/main.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/themes/light/main.css">
     <link rel="stylesheet" href="assets/css/blurry.load.css">
-    
-    
+
    <style>
     html,
     body,
@@ -26,6 +27,11 @@
       height: 100%;
       width: 100%;
     }
+
+    
+      #infoDiv {
+        padding: 10px;
+      }
 
     .esri-attribution__sources {
 
@@ -50,6 +56,107 @@
       opacity: 0.75;
     }
     #map{ height: 100% }
+
+    .loader,
+        .loader:after {
+            border-radius: 50%;
+            width: 6em;
+            height: 6em;
+        }
+        .loader {            
+            margin: 5% auto;
+            margin-top: 20%;
+            font-size: 10px;
+            
+            position: relative;
+            text-indent: -9999em;
+            border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-left: 1.1em solid #ffffff;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load8 1.1s infinite linear;
+            animation: load8 1.1s infinite linear;
+        }
+        @-webkit-keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        #loadingDiv {
+            position:absolute;;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background-color:#CDCDCE;
+            opacity: 0.8;
+        }
+
+        #screenshotDiv {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+
+      .hide {
+        display: none;
+      }
+
+      img {
+        border: 10px solid white;
+        box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+      }
+
+      #screenshotDiv > * {
+        margin: 0.5em;
+      }
+
+      .screenshotCursor {
+        cursor: crosshair;
+      }
+
+      .action-button {
+        padding: 0.6em;
+        border: 1px solid #0079c1;
+        text-align: center;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .action-button:hover,
+      .action-button:focus {
+        background: #0079c1;
+        color: white;
+      }
+
+      #maskDiv {
+        position: absolute;
+        background: rgba(255, 51, 0, 0.1);
+        border: 2px dashed rgb(255, 51, 0);
+      }
+
   </style>
 
   
@@ -2954,40 +3061,40 @@
           <!-- Hapa Hapa -->
 
           <!-- Body -->
-          <div class="header-body">
-            <div class="row align-items-center">
+          <div class="header-body"  id="get_all_projects_forms">
+            <div class="row mb-2">
               
-              <div class="col ml-n3 pt-3 ml-md-n2">
-
+              <div class="col-6 float-left">
                 <!-- Pretitle -->
                 <h4 class="header-pretitle">
                   Project
                 </h4>
-
                 <!-- Title -->
                 <h3 class="header-title">
                   <span id="project_name_title"></span>
                 </h3>
-
               </div>
-              <div class="col-12 col-md-auto mt-2 mt-md-0">
 
+              <div class="col-md-12 mt-2">
                 <!-- Avatar group -->
                 <div class="avatar-group">
 
-                  <div class="col-12 col-md-12 mt-2" id="get_all_projects_forms">
-                    <label for="validationServer01">Filter By Project Form</label>
-                    <select class="custom-select mb-3 selected_form" id="project_forms" data-toggle="select">
-                     
-                    </select>
-                    <div class="valid-feedback">
-                      Looks good!
+                    <div class="col-md-6 float-left"> 
+                      <select class="custom-select mb-3 selected_form" id="project_forms">
+                        <option selected="selected" disabled>Filter By Project Form</option>
+                      </select>
                     </div>
-                  </div>
-                
+                    <div class="col-md-7 float-right"> 
+                      <div class="row  mb-1">
+                        <div class="col-12">
+                           <!-- Buttons -->
+                            <select id="collections" style="width: max-content;" class=" custom-select custom-select-sm ml-2">
+                            </select>
+                        </div>
+                      </div>
+                    </div>
+                  
                 </div>
-
-
               </div>
             </div> <!-- / .row -->
             <div class="row align-items-center pt-2" id="tabs">
@@ -2995,9 +3102,9 @@
               <div class="col">
                 <nav>
                   <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Overview Summary</a>
+                    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Overview Summary</a>
                     <a class="nav-item nav-link tab_map" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"  role="tab" aria-controls="nav-profile" aria-selected="false">Map Viewer</a>
-                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Gallery</a>
+                   <!--<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Gallery</a>--> 
                   </div>
                 </nav>
               
@@ -3006,13 +3113,24 @@
                   <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                     <div class="container">
                       <div class="row">
-                        <div class="col-12 col-lg-6 col-xl">
-              
+                        <div class="col-12 col-lg-12 col-xl show-data">
+                          <div class="col-md-12 mb-3"> 
+                            <div class="row center">
+                              <div class="col-6">
+                               Project Form: <br><span id="project_form"></span> <span class="badge badge-pill badge-soft-secondary"></span>
+                              </div>
+                              <div class="col-6">
+                                Project Data: <br><span id="collection_module"></span> <span class="badge badge-pill badge-soft-secondary"></span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <br><br>
                           <!-- Card -->
                           <div class="card">
                             <div class="card-body">
                               <div class="row align-items-center">
-                                <div class="col">
+                                <div class="col-md-6">
                                   <div class="m-3">
                                   <!-- Title -->
                                   <h6 class="text-uppercase text-muted mb-2">
@@ -3024,51 +3142,96 @@
                                   </span>
                                  </div>
                                 </div>
-                                <div class="col-auto">
+
+                                <div class="col-md-6" id="data_collectors">
+                                  <div class="m-3">
+                                  <!-- Title -->
+                                  <h6 class="text-uppercase text-muted mb-2">
+                                    Data collectors
+                                  </h6>
               
-                                  <!-- Icon -->
-                                  <span class="h2 fe fe-book-open text-muted mb-0"></span>
-              
+                                  <!-- Heading -->
+                                  <span class="data_collectors h2 mb-0">
+                                  </span>
+                                 </div>
                                 </div>
+                                
                               </div> <!-- / .row -->
               
                             </div>
                           </div>
-              
+                         
+                          <div class="col-12 col-xl-12 conversionsChart">
+
+                            <!-- Convertions -->
+                            <div class="card">
+                              <div class="card-header">
+                
+                                <!-- Title -->
+                                <h4 class="card-header-title">
+                                  Data Collectors
+                                </h4>
+                
+                                <!-- Caption 
+                                <span class="text-muted mr-3">
+                                  Last year comparision:
+                                </span>
+                
+                                Switch 
+                                <div class="custom-control custom-switch">
+                                  <input type="checkbox" class="custom-control-input" id="cardToggle" data-toggle="chart" data-target="#conversionsChart" data-trigger="change" data-action="add" data-dataset="1">
+                                  <label class="custom-control-label" for="cardToggle"></label>
+                                </div>-->
+                
+                              </div>
+                              <div class="card-body">
+                
+                                <!-- Chart -->
+                                <div class="chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                  <canvas id="conversionsChart" class="chart-canvas chartjs-render-monitor" style="display: block; width: 996px; height: 300px;" width="996" height="300"></canvas>
+                                </div>
+                
+                              </div>
+                            </div>
+                          </div>
+
+
                         </div>
-                        <div class="col-12 col-lg-6 col-xl">
+                        <!--<div class="col-12 col-lg-6 col-xl">
               
-                          <!-- Card -->
+                         
                           <div class="card">
                             <div class="card-body">
                               <div class="row align-items-center">
                                 <div class="col">
                                   <div class="m-3">
-                                  <!-- Title -->
+                                  
                                   <h6 class="text-uppercase text-muted mb-2">
-                                    Collectors
+                                    Collectors  
                                   </h6>
               
-                                  <!-- Heading -->
+                                  
                                     <span class="number_collectors h2 mb-0">
                                     </span>
                                   </div>
                                 </div>
                                 <div class="col-auto">
               
-                                  <!-- Icon -->
+                                 
                                   <span class="h2 fe fe-users text-muted mb-0"></span>
               
                                 </div>
-                              </div> <!-- / .row -->
+                              </div> 
               
                             </div>
                           </div>
               
-                        </div>
+                        </div>-->
+                        
                         <!-- CARDS -->
-                      <div class="container">
-                        <div class="row">
+                      <div class="container show-data">
+                        <div class="row col-md-12">
+                          
                           <div class="col-12">
 
                             <!-- Projects -->
@@ -3081,19 +3244,30 @@
                                 </h4>
 
                                 <!-- Button -->
-                                <button id="save_all_data" class="btn btn-sm btn-white ">
-                                  Download All Data
-                                </button>
+                                <div class="dropdown">
+                                  <button class="btn btn-sm btn-white dropdown-toggle" type="button" id="bulkActionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Export All Data Options
+                                  </button>
+                                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bulkActionDropdown">
+                                    <a class="dropdown-item csv_download" data-method="csv" v-on:click="download('CSV')"  href="#!">CSV</a>
+                                    <a class="dropdown-item csv_download" data-method="json"  href="#!">JSON</a>
+                                    <a class="dropdown-item csv_download" data-method="stata" href="#!">STATA</a>
+                                  </div>
+                                </div>
                                 &nbsp;&nbsp;
                                 
 
                               </div>
                               <div class="table-responsive table table-striped mr-4 ml-2 mt-4 mb-0">
+                                <div class="card card-fill-sm" id="instructions">
+                                  <div class="card-body">...</div>
+                                </div>
                                 
                                 <table cellspacing="0" class="text-capitalize table table-striped table-hover" id="data_table_list">
                                   <thead>
                                     <tr></tr>
                                   </thead>
+                                   
                                 </table>
 
                               </div>
@@ -3103,12 +3277,120 @@
                           
                         </div> <!-- / .row -->
                       </div>
+                      
+                      </div>
+                      <div class="row text-center text-black-50" id="instructions">
+                        <div class="col-md-12 col-lg-12 col-xl">
 
+                          <!-- Value  -->
+                          <div class="card">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col m-5">
+              
+                                  <!-- Title -->
+                                  <h6 class="text-uppercase text-muted h2 mb-2">
+                                    Instructions
+                                  </h6>
+                                  <br>
+                                  <!-- Heading -->
+                                  <h6 class="text-uppercase h5">Select a Form </h6><br>
+                                  <span class="h5 mb-0">
+                                    A project may consist of several forms that are used to collect data from the field.<br>
+                                    <br>
+                                  </span>
+                                  <h6 class="text-uppercase h5">Select the type of data</h6><br>
+                                  <span class="h5 mb-0">
+                                    A form may consist of several type of data that were collected as modules, for example household members, crops grown by household etc<br>
+                                    <br>
+                                  </span>
+                                </div>
+                              </div> <!-- / .row -->
+                            </div>
+                          </div>
+              
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div class="card-header">
+
+                      <div class="card-header">
+
+                          <!-- Title -->
+                          <h4 class="card-header-title">
+                            <div class="custom-control custom-switch">
+                              <span class="card-header-title" style="margin-right: 50px;">
+                                Check to show Basemap Gallery (Choose Basemap)
+                              </span>
+                              
+                              <input type="checkbox" class="custom-control-input" id="cardToggle">
+                              <label class="custom-control-label" for="cardToggle"></label>
+                            </div>
+                          </h4>
+                          
+                          <button id="screenshotBtn"
+                          class="action-button esri-widget"
+                          aria-label="Select screenshot area"
+                          title="Select screenshot area">
+                          Select screenshot area
+                          </button>
+                          <!-- Title -->
+                          <h4 class="card-header-title">
+                            <div class="custom-control custom-switch">
+                              <span class="card-header-title" style="margin-right: 50px;">
+                                Get 3D Map View
+                              </span>
+                              
+                              <input type="checkbox" class="custom-control-input" id="cardToggle2">
+                              <label class="custom-control-label" for="cardToggle2"></label>
+                            </div>
+                          </h4>
+
+                          <h4 class="card-header-title">
+                            <div class="custom-control custom-switch">
+                              <span class="card-header-title" style="margin-right: 50px;">
+                                Check to Export Map Area
+                              </span> 
+                             
+                              <input type="checkbox" class="custom-control-input" id="cardToggle1">
+                              <label class="custom-control-label" for="cardToggle1"></label>
+                            </div>
+                          </h4>
+                      </div>
+                    </div>
                     <div id="viewDiv" style="height: 700px"></div>
+                    <div id="screenshotDiv" class="hide">
+                      <img class="js-screenshot-image" />
+                      <div>
+                        <label>Set a text to be displayed on the image: </label
+                        ><input type="text" placeholder="Image text" id="textInput" autofocus />
+                      </div>
+                      <button
+                        id="downloadBtn"
+                        class="action-button"
+                        aria-label="Download image"
+                        title="Download image"
+                      >
+                        Download image
+                      </button>
+                      <button
+                        id="closeBtn"
+                        class="action-button"
+                        aria-label="Back to webscene"
+                        title="Back to webscene"
+                      >
+                        Back to webscene
+                      </button>
+                    </div>
+                    <div id="maskDiv" class="hide screenshotCursor"></div>
+                    <div id="infoDiv" class="esri-widget">
+                      
+                      <button id="cluster" class="esri-button">Disable Clustering</button>
+                      <div id="legendDiv"></div>
+                    </div>
+                    
                     <!--<span id="layerToggle" class="esri-widget mt-2">
                       <input type="checkbox" id="streetsLayer" /> Beneficiaries
                     </span> -->
@@ -3228,17 +3510,34 @@
     <script src="assets/libs/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
     <script src="assets/libs/quill/dist/quill.min.js"></script>
     <script src="assets/libs/datatables/pdfmake.min.js"></script>
-    <script src="assets/libs/datatables/vfs_fonts.js"></script>
+    <script  src="assets/libs/datatables/vfs_fonts.js"></script>
     <script src="assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/libs/datatables/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script> 
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script> 
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.colVis.min.js"></script> 
+
     <script src="assets/libs/select2/dist/js/select2.full.min.js"></script>
     <script src="assets/js/toastr.js"></script>
     <script src="assets/js/blurry.load.js"></script>
     <script src="assets/js/axios.min.js"></script>
     <script src="assets/js/vue.min.js"></script>
+
+    
+    
+    
+    
+
+
     <script>
       $(document).ready(function() {
+
+        //window.localStorage.removeItem("CurrentProjectForm");
+        //window.localStorage.removeItem("CurrentProjectCollection");
 
         /*axios.get('https://odk-server.icipe.org/v1/users/current').then(response => {
             console.log(response);
@@ -3248,9 +3547,38 @@
         .catch(function (error) {
           console.log(error);
         });*/
+        //$(".show-data").hide();
+        
+        //$('.esri-print__container').hide();
+        //$('.esri-ui-bottom-left').hide();
+        const MainForm = window.localStorage.getItem("MainForm");
+        const CurrentProjectCollection = window.localStorage.getItem("CurrentProjectCollection");
+        if(MainForm != CurrentProjectCollection)
+        {
+          
+          $(".conversionsChart").hide();
+          $("#data_collectors").hide();
+                //Hapaaa
+        }
 
-        console.log(document.cookie);
+      
+        $('body').append('<div style="" id="loadingDiv"><div class="loader">Loading...</div></div>');
 
+        $(window).on('load', function(){
+            setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+          });
+          function removeLoader(){
+              $( "#loadingDiv" ).fadeOut(500, function() {
+                // fadeOut complete. Remove the loading div
+                $( "#loadingDiv" ).remove(); //makes page more lightweight 
+            });  
+          }
+
+        $("#instructions").hide();
+       // $(".show-data").hide();
+        //$("#instructions").hide();
+       // $("#tabs").tabs({ active: 3 });
+       //$( "#tabs" ).tabs( {active:1});
         function openWindowReload(link) {
 				var href = link.href;
 				window.open(href,'_blank');
@@ -3270,16 +3598,118 @@
           $('.project-authenticated').css('display','block');
           //window.localStorage.setItem('Permission', "1");
         }
+        
 
-        $(".selected_form").change(function() {
-          selected_form = $(".selected_form",this).val();
+        if(window.localStorage.getItem('FormChnageStatus')==0){
+            $(".show-data").hide();
+            $("#instructions").show();
+            //$(".tab_map").addClass("nav-item active");
 
+
+        }
+
+
+        if(window.localStorage.getItem('FormChnageStatus')==1){
+            
+            function activaTab(tab){
+                $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+            };
+
+            activaTab('nav-profile');
+
+        } 
+        
+        if(window.localStorage.getItem('CollectionChnageStatus')==1&&window.localStorage.getItem('FormChnageStatus')==1){
+
+          function activaTab(tab){
+                $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+            };
+
+            activaTab('nav-home');
+
+        }
+
+        
+        $(".selected_form").on("change", function () { 
+          var selected_form = $(".selected_form").val();
+          window.localStorage.setItem('FormChnageStatus', '1');
           window.localStorage.setItem('CurrentProjectForm', selected_form);
+          window.localStorage.setItem('CurrentProjectCollection', selected_form);
+          window.localStorage.setItem('MainForm', $(this).find(':selected').data("form"));
 
-          setTimeout(function(){ location.reload();  }, 500);
+  
+          if(window.localStorage.getItem('FormChnageStatus')==1){
+             
+            setTimeout(function(){ location.reload();  }, 100);
 
+          }
+        });
+
+        $("#collections").on("change", function () { 
+
+          var collection = $("#collections").val();
+
+
+          window.localStorage.setItem('CollectionChnageStatus', '1');
+          window.localStorage.setItem('CurrentProjectCollection', collection);
+            
+         
+          if(window.localStorage.getItem('CollectionChnageStatus')==1){
+            
+            setTimeout(function(){ location.reload();  }, 100);
+
+          }
+          
+        }); 
+        
+        $(".csv_download" ).click(function() {
+            let file_type = $(this).attr("data-method");
+            const method = 'GET';
+            const url = 'http://localhost:3000/download_data/'+  window.localStorage.getItem('CurrentProjectForm') +'/'+ window.localStorage.getItem('CurrentProjectCollection') +'/'+ file_type +'';
+         
+             axios.request({url,method,headers: { 'Content-Type': 'application/x-www-form-urlencoded'},responseType: 'blob'}).then(({ data }) => {
+              
+    
+
+                const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+                console.log(downloadUrl);
+                 const link = document.createElement('a');
+
+                link.href = downloadUrl;
+                
+                if(file_type == 'csv'){
+
+                  link.setAttribute('download', ''+window.localStorage.getItem('CurrentProjectCollection')+'.csv'); //any other extension
+                
+                }
+
+                if(file_type == 'json'){
+
+                  link.setAttribute('download', ''+window.localStorage.getItem('CurrentProjectCollection')+'.json'); 
+
+                }
+
+                if(file_type == 'stata'){
+
+                link.setAttribute('download', ''+window.localStorage.getItem('CurrentProjectCollection')+'.dta'); 
+
+                }
+               
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                link.remove();
+
+
+
+
+              }); 
 
         });
+
+        
 
         $("#save_all_data").click(function(){
 
@@ -3288,7 +3718,7 @@
           const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
 
            const method = 'GET';
-           const url = 'https://odk-project-viewer.herokuapp.com/download_all_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'';
+           const url = 'http://localhost:3000/download_all_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'';
 
            axios.request({url,method,headers: { 'Content-Type': 'application/x-www-form-urlencoded'},responseType: 'blob'}).then(({ data }) => {
 
@@ -3335,41 +3765,95 @@
         // define methods under the `methods` object
         methods: {
 
-          get_projects_forms: function (project_id, project_name) {
+
+          get_projects_forms_data: function()
+          {
+
+           var CurrentProjectForm = window.localStorage.getItem('CurrentProjectForm');
+           var CurrentProjectCollection = window.localStorage.getItem('CurrentProjectCollection');
+           
+           var collections = $("#collections").val();
+
+         
+           if(CurrentProjectForm == 'null'){
+            
+             $(".show-data").hide();
+
+           } else {
+             
+            $("#instructions").hide();
+
+           }
+            
+           $("#project_form").html(CurrentProjectForm.replaceAll('_', ' '));
+           $("#collection_module").html(CurrentProjectCollection.replaceAll('_', ' '));
+
+             axios.get('http://localhost:3000/get_all_forms_db_collections/'+ CurrentProjectForm +'').then(response => {
+              
+                  var form_list = response.data;
+
+                  var $select = $('#collections'); 
+                  $select.find('option').remove();  
+                  $select.append('<option selected="selected" disabled="disabled">Select Type of data</option>');
+                  $.each(form_list,function(key, value) 
+                  {
+                    var form_name = value.name;
+                    var collection_nam1 = form_name.replace('-','_');
+                    var collection_name = collection_nam1.replace('.','_');
+                    $select.append('<option value=' + value.name + '>' + collection_name + '</option>');
+
+                  });
+             
+            })
+
+           
+
+          },  get_projects_forms: function (project_id, project_name) {
             
             const Token = window.localStorage.getItem("Token");
            // const CurrentProject = window.localStorage.getItem("CurrentProject");
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects_forms/'+ project_id +'/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_projects_forms/'+ project_id +'/'+ Token +'').then(response => {
               
-             
+              
+              
               $("#project_name_title").html(project_name)
 
               var form_list = response.data;
 
               var $select = $('#project_forms'); 
-              $select.find('option').remove();  
+              $select.find('option').remove();
+              $select.append('<option selected="selected" disabled="disabled">Select Form</option>');  
               $.each(form_list,function(key, value) 
               {
-                  $select.append('<option value=' + value.xmlFormId + '>' + value.name + '</option>');
+                var ty = value.xmlFormId;
+                var db_orinal_name = ty.replace('-','_');
+                var table_name12 = db_orinal_name.replace('.','_');
+                var table_name =  table_name12.replace(/\s+/g,"_");
+
+                $select.append('<option data-form='+ ty +' value=' + table_name + '>' + value.name + '</option>');
               
               });
 
 
               var selected_form = $(".selected_form").val();
-              window.localStorage.setItem('CurrentProjectForm', selected_form);
               
-              
+              if(window.localStorage.getItem('FormChnageStatus')==0){
 
-              
+                window.localStorage.setItem('CurrentProjectForm', selected_form);
+
+              }
+
+              get_all_projects_forms.get_projects_forms_data()
+              //get_project_data.get_project_data_list()
               
             })
             
           },
-          get_project_collectors: function (project_id) {
+           get_project_collectors: function (project_id) {
             
             const Token = window.localStorage.getItem("Token");
            // const CurrentProject = window.localStorage.getItem("CurrentProject");
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects_collectors/'+ project_id +'/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_projects_collectors/'+ project_id +'/'+ Token +'').then(response => {
               
               console.log(response.data);
               window.localStorage.setItem('TotalProjectCollectors', response.data.length);
@@ -3384,7 +3868,7 @@
 
       //get_all_projects_forms.get_projects_forms(window.localStorage.getItem("CurrentProject"),window.localStorage.getItem("CurrentProjectName") )
       get_all_projects_forms.get_project_collectors(window.localStorage.getItem("CurrentProject"))
-                      
+     // get_project_data.get_project_data_list()                   
 
      /// var CurrentProject = window.localStorage.getItem("CurrentProject");
 
@@ -3402,6 +3886,8 @@
           name: 'Vue.js',
           projects_data: [],
           gallery_details: []
+        }, mounted() {
+            //get_project_data.get_project_data_list()
         },
         // define methods under the `methods` object
         methods: {
@@ -3411,17 +3897,173 @@
             const Token = window.localStorage.getItem("Token");
             const CurrentProject = window.localStorage.getItem("CurrentProject");
             const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
-
-
-           /* axios.get('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/' + window.localStorage.getItem('CurrentProjectForm') +'/'+ Token +'')
+            const MainForm = window.localStorage.getItem("MainForm");
+            const CurrentProjectCollection = window.localStorage.getItem("CurrentProjectCollection");
+            
+            axios.get('http://localhost:3000/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/' + window.localStorage.getItem('CurrentProjectCollection') +'/'+ Token +'')
                     .then(function (response) {
                       console.log(response.data);
               }).catch(function (error) {
                       console.log(error);
-              }); */
+              }); 
+
+              //Places to start changing
+
+             get_dataa ()
+
+            async function get_dataa () {
+            
+              await axios.get('http://localhost:3000/get_collection_data/'+CurrentProjectForm+'/'+ CurrentProjectCollection +'')
+                    .then(function (response) {
+
+                      var projects_data = response.data;
+                      console.log(projects_data.length);
+
+                      all_dataaa (response)
+
+                }).catch(function (error) {
+                      console.log(error);
+                });
+
+              await axios.get('http://localhost:3000/get_collection_data_count/'+CurrentProjectForm+'/'+ CurrentProjectCollection +'')
+                    .then(function (response) {
+
+                      var projects_data = response.data;
+                      //console.log("Counted", projects_data.count);
+                      $(".data_collected").html(projects_data.count);
+
+                     // all_dataaa (response)
+
+              }).catch(function (error) {
+                      console.log(error);
+              });
+
+             await axios.get('http://localhost:3000/get_data_collectors_count/'+CurrentProjectForm+'/'+ CurrentProjectCollection +'')
+              .then(function (responses) {
+
+                //console.log(responses);                `
+
+                get_collectors_graph(responses,responses['data'])
+
+               }).catch(function (error) {
+                console.log(error);
+               });
 
 
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_project_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
+               function get_collectors_graph(resp, responses){
+
+                let submitterName = [];
+                let submitterNumber = [];
+
+                $(".data_collectors").html(resp['data'].length);
+                
+                $.each(responses , function (key, value) {
+
+                    submitterName.push(value._id)
+                    submitterNumber.push(value.NumberOfSubmitters)
+
+                });
+
+
+
+                var e = document.getElementById("conversionsChart");
+                "undefined" != typeof Chart &&
+                    e &&
+                    new Chart(e, {
+                        type: "bar",
+                        options: {
+                            scales: {
+                                yAxes: [
+                                    {
+                                        ticks: {
+                                            callback: function (e) {
+                                                return e + "";
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        data: {
+                            labels: submitterName,
+                            datasets: [
+                                { label: "Number of Data Collected", data: submitterNumber },
+                            ],
+                        },
+                    });
+
+
+               }
+
+
+             async function all_dataaa (response){
+
+                   var projects_data = response.data;
+
+                    let k, tr = '';
+
+
+
+                    $.each(projects_data[0], function (key, value) {
+
+                    // var headers = get_headers();
+
+                    //console.log("Hapa", value[0]);
+
+                      console.log("Key", key);
+                      
+                      $('#data_table_list thead tr:first-child').append($('<th>', {
+
+                        text: key
+
+                      }));
+
+                      //console.log(key)
+
+                    });
+
+                    var dtable_api = await $('#data_table_list').dataTable({
+                         "processing": true,
+                         "deferRender": true,
+                          dom: 'Bfrtip',
+                          buttons: [
+                             // 'copyHtml5',
+                              //'excelHtml5',
+                             // 'colvis',
+                             
+                              
+                          ]
+                      });
+
+
+                   await $.each(projects_data, function (i, l) {
+
+                     pullpull()
+
+                    async function pullpull(){
+
+                      var final_data_values = [];
+                      var final_data_key = [];
+
+                      await $.each(l, function (key, value) {
+
+                        final_data_values.push(value);
+                        final_data_key.push(key);
+
+                        });
+
+                       await dtable_api.api().row.add(final_data_values).draw(true);
+
+                     }
+
+                     
+
+
+                    });
+
+              }
+
+         /*   axios.get('http://localhost:3000/get_all_project_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
               var projects_data = response.data;
               var collected_data = projects_data.length;
               this.gallery_details = response.data;
@@ -3437,9 +4079,9 @@
 
               }
 
+            }); */
               
-              
-              var headers = [];
+             /*  var headers = [];
               $.each(projects_data[0], function (key, value) {
 
                   $('#data_table_list thead tr:first-child').append($('<th>', {
@@ -3494,7 +4136,7 @@
                       axios.defaults.headers.common['Authorization'] = authHeader;
 
                       
-                      await axios.get('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'')
+                      await axios.get('http://localhost:3000/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'')
                         .then(function (response) {
 
                          // console.log(response.data);
@@ -3509,7 +4151,7 @@
                       });
 
 
-                    //  let req = await fetch('https://odk-project-viewer.herokuapp.com/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'');
+                    //  let req = await fetch('http://localhost:3000/authenticated_images/'+ window.localStorage.getItem('CurrentProject') +'/'+ window.localStorage.getItem('CurrentProjectForm') +'/'+ final_data_values[0] +'/'+ photo_value +'/'+ Token +'');
                        
                         // 
                          
@@ -3527,11 +4169,11 @@
                    
                   dtable_api.api().row.add(final_data_values).draw(true);
 
-              });
+              }); 
 
               
 
-             /* var columnDefs = [];
+              var columnDefs = [];
                 //loop for populating column defs
                 for(let k in projects_data[0]){
                   if(columnDefs.indexOf(k) === -1){
@@ -3558,16 +4200,17 @@
                 "sPaginationType": "full_numbers",
                 data: data,
                 columns: columnDefs
-              }); */
+              }); 
 
 
 
            // console.log(projects_data)  
 
               
-            })
+            })*/
             
           }
+        }
         }
       })
 
@@ -3584,13 +4227,20 @@
         methods: {
           
           get_projects: function (event) {
-
+            get_project_data.get_project_data_list()
             const Token = window.localStorage.getItem("Token");
 
-            axios.get('https://odk-project-viewer.herokuapp.com/get_all_projects/'+ Token +'').then(response => {
+            axios.get('http://localhost:3000/get_all_projects/'+ Token +'').then(response => {
               this.projects = response.data
             })
+
+
             
+          },download: function (csv) {
+
+             alert(csv);
+           
+
           }, pass_project_id: function (project_id, project_name) {
 
 
@@ -3599,7 +4249,10 @@
            window.localStorage.setItem('Permission', "1");
            window.localStorage.setItem('CurrentProject', project_id);
            window.localStorage.setItem('CurrentProjectName', project_name);
-
+           window.localStorage.setItem('FormChnageStatus', '0');
+           window.localStorage.setItem('CollectionChnageStatus', '0');
+            
+            
            get_all_projects_forms.get_projects_forms(window.localStorage.getItem("CurrentProject"),window.localStorage.getItem("CurrentProjectName") )
            
            setTimeout(function(){ 
@@ -3616,7 +4269,7 @@
 
       if(window.localStorage.getItem("CurrentProject") != null){
 
-        get_project_data.get_project_data_list()
+        //get_project_data.get_project_data_list()
 
       }
 
@@ -3662,13 +4315,13 @@
     <!-- Theme JS -->
     <script src="assets/js/theme.min.js"></script>
     <script src="assets/js/dashkit.min.js"></script>
-
+   
     <script>
-
+        
     </script>
     
     
-    <script src="https://js.arcgis.com/4.12/"></script>
+    <script src="assets/js/arcgis_js.js"></script>
     
     <script>
       
@@ -3685,32 +4338,460 @@
           "esri/layers/support/Field",
           "esri/Graphic",
           "esri/widgets/BasemapGallery",
-          "esri/tasks/support/Query"
+          "esri/tasks/support/Query",
+          "esri/widgets/Expand",
+          "esri/widgets/Home",
+          "esri/views/SceneView",
+          "esri/WebScene",
+          "esri/widgets/Print",
+          "esri/config"
       ], function(Map, MapView, request,
           FeatureLayer,
           Field,
-          Graphic, BasemapGallery,Query) {
+          Graphic, BasemapGallery,Query, Expand, Home,SceneView,WebScene,Print, esriConfig) {
   
-      var map = new Map({
-        basemap: "streets-vector",  // The initial basemap to toggle from
-        ground: "world-elevation"
-      });
-  
-      var view = new MapView({
-        container: "viewDiv",
-        map: map,
-        center: [0,0], // longitude, latitude
-        zoom: 15
-      });
+            
 
-      var basemapGallery = new BasemapGallery({
+            var appConfig = {
+              mapView: null,
+              sceneView: null,
+              activeView: null,
+              container: "viewDiv" // use same container for views
+            };
+
+            var initialViewParams = {
+              map: map,
+              zoom: 4,
+              center: [15, 65],
+              container: appConfig.container
+            };
+
+            var map = new Map({
+              basemap: "streets-vector",  // The initial basemap to toggle from
+              ground: "world-elevation"
+            });
+
+            var view = new MapView({
+              container: "viewDiv",
+              map: map,
+              center: [0,0], // longitude, latitude
+              zoom: 8
+            });
+
+            //Screenshot for view scene
+             // the button that triggers area selection mode
+        const screenshotBtn = document.getElementById("screenshotBtn");
+
+                    // the orange mask used to select the area
+                    const maskDiv = document.getElementById("maskDiv");
+
+                    // element where we display the print preview
+                    const screenshotDiv = document.getElementById("screenshotDiv");
+
+                    // the button that triggers download
+                    const downloadBtn = document.getElementById("downloadBtn");
+
+                    // the button to hide the print preview html element
+                    const closeBtn = document.getElementById("closeBtn");
+
+                    // replace the navigation elements with screenshot area selection button
+                    view.ui.empty("top-left");
+                    view.ui.add(screenshotBtn, "top-left");
+
+                    // add an event listener to trigger the area selection mode
+                    screenshotBtn.addEventListener("click", () => {
+                      screenshotBtn.classList.add("active");
+                      view.container.classList.add("screenshotCursor");
+                      let area = null;
+
+                      // listen for drag events and compute the selected area
+                      const dragHandler = view.on("drag", (event) => {
+                        // prevent navigation in the view
+                        event.stopPropagation();
+
+                        // when the user starts dragging or is dragging
+                        if (event.action !== "end") {
+                          // calculate the extent of the area selected by dragging the cursor
+                          const xmin = clamp(
+                            Math.min(event.origin.x, event.x),
+                            0,
+                            view.width
+                          );
+                          const xmax = clamp(
+                            Math.max(event.origin.x, event.x),
+                            0,
+                            view.width
+                          );
+                          const ymin = clamp(
+                            Math.min(event.origin.y, event.y),
+                            0,
+                            view.height
+                          );
+                          const ymax = clamp(
+                            Math.max(event.origin.y, event.y),
+                            0,
+                            view.height
+                          );
+                          area = {
+                            x: xmin,
+                            y: ymin,
+                            width: xmax - xmin,
+                            height: ymax - ymin
+                          };
+                          // set the position of the div element that marks the selected area
+                          setMaskPosition(area);
+                        }
+                        // when the user stops dragging
+                        else {
+                          // remove the drag event listener from the SceneView
+                          dragHandler.remove();
+                          // the screenshot of the selected area is taken
+                          view
+                            .takeScreenshot({ area: area, format: "png" })
+                            .then((screenshot) => {
+                              // display a preview of the image
+                              showPreview(screenshot);
+
+                              // create the image for download
+                              downloadBtn.onclick = () => {
+                                const text = document.getElementById("textInput").value;
+                                // if a text exists, then add it to the image
+                                if (text) {
+                                  const dataUrl = getImageWithText(screenshot, text);
+                                  downloadImage(
+                                    `${webscene.portalItem.title}.png`,
+                                    dataUrl
+                                  );
+                                }
+                                // otherwise download only the webscene screenshot
+                                else {
+                                  downloadImage(
+                                    `${webscene.portalItem.title}.png`,
+                                    screenshot.dataUrl
+                                  );
+                                }
+                              };
+
+                              // the screenshot mode is disabled
+                              screenshotBtn.classList.remove("active");
+                              view.container.classList.remove("screenshotCursor");
+                              setMaskPosition(null);
+                            });
+                        }
+                      });
+
+                      function setMaskPosition(area) {
+                        if (area) {
+                          maskDiv.classList.remove("hide");
+                          maskDiv.style.left = `${area.x}px`;
+                          maskDiv.style.top = `${area.y}px`;
+                          maskDiv.style.width = `${area.width}px`;
+                          maskDiv.style.height = `${area.height}px`;
+                        } else {
+                          maskDiv.classList.add("hide");
+                        }
+                      }
+
+                      function clamp(value, from, to) {
+                        return value < from ? from : value > to ? to : value;
+                      }
+                    });
+
+                    // creates an image that will be appended to the DOM
+                    // so that users can have a preview of what they will download
+                    function showPreview(screenshot) {
+                      screenshotDiv.classList.remove("hide");
+                      // add the screenshot dataUrl as the src of an image element
+                      const screenshotImage = document.getElementsByClassName(
+                        "js-screenshot-image"
+                      )[0];
+                      screenshotImage.width = screenshot.data.width;
+                      screenshotImage.height = screenshot.data.height;
+                      screenshotImage.src = screenshot.dataUrl;
+                    }
+
+                    // returns a new image created by adding a custom text to the webscene image
+                    function getImageWithText(screenshot, text) {
+                      const imageData = screenshot.data;
+
+                      // to add the text to the screenshot we create a new canvas element
+                      const canvas = document.createElement("canvas");
+                      const context = canvas.getContext("2d");
+                      canvas.height = imageData.height;
+                      canvas.width = imageData.width;
+
+                      // add the screenshot data to the canvas
+                      context.putImageData(imageData, 0, 0);
+                      context.font = "20px Arial";
+                      context.fillStyle = "#000";
+                      context.fillRect(
+                        0,
+                        imageData.height - 40,
+                        context.measureText(text).width + 20,
+                        30
+                      );
+
+                      // add the text from the textInput element
+                      context.fillStyle = "#fff";
+                      context.fillText(text, 10, imageData.height - 20);
+
+                      return canvas.toDataURL();
+                    }
+
+                    function downloadImage(filename, dataUrl) {
+                      // the download is handled differently in Microsoft browsers
+                      // because the download attribute for <a> elements is not supported
+                      if (!window.navigator.msSaveOrOpenBlob) {
+                        // in browsers that support the download attribute
+                        // a link is created and a programmatic click will trigger the download
+                        const element = document.createElement("a");
+                        element.setAttribute("href", dataUrl);
+                        element.setAttribute("download", filename);
+                        element.style.display = "none";
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
+                      } else {
+                        // for MS browsers convert dataUrl to Blob
+                        const byteString = atob(dataUrl.split(",")[1]);
+                        const mimeString = dataUrl
+                          .split(",")[0]
+                          .split(":")[1]
+                          .split(";")[0];
+                        const ab = new ArrayBuffer(byteString.length);
+                        const ia = new Uint8Array(ab);
+                        for (let i = 0; i < byteString.length; i++) {
+                          ia[i] = byteString.charCodeAt(i);
+                        }
+                        const blob = new Blob([ab], { type: mimeString });
+
+                        // download file
+                        window.navigator.msSaveOrOpenBlob(blob, filename);
+                      }
+                    }
+                    // hide the print preview html element on click
+                    closeBtn.addEventListener("click", () => {
+                      screenshotDiv.classList.add("hide");
+                    });
+            // End screenshot for view scene
+
+            if(window.localStorage.getItem('D') == '2D'){
+
+              var view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [0,0], // longitude, latitude
+                zoom: 8
+              });
+                  
+            } else {
+
+              var view = new SceneView({
+              container: "viewDiv",
+              map: map,
+              heading: 90, // face due east
+              tilt: 45, 
+              center: [0,0], // longitude, latitude
+              zoom: 15
+            });
+
+            document.getElementById("cardToggle2").checked = true;
+
+
+            }
+
+            
+
+            var initialViewParams = {
+                map: map,
+                zoom: 4,
+                center: [15, 65],
+                container: appConfig.container
+              };
+
+              // create 3D view, won't initialize until container is set
+              initialViewParams.container = null;
+              appConfig.sceneView = createView(initialViewParams, "3d");
+
+              // Swaps the view from 2D to 3D and vice versa
+                  function swapView() {
+                    var is3D = appConfig.activeView.type === "3d";
+
+                    // remove the reference to the container for the previous view
+                    appConfig.activeView.container = null;
+
+                    if (is3D) {
+                      // if the input view is a SceneView, set the viewpoint on the
+                      // mapView instance. Set the container on the mapView and flag
+                      // it as the active view
+                      appConfig.mapView.viewpoint = appConfig.activeView.viewpoint.clone();
+                      appConfig.mapView.container = appConfig.container;
+                      appConfig.activeView = appConfig.mapView;
+                      swapButton.value = "3D";
+                    } else {
+                      appConfig.sceneView.viewpoint = appConfig.activeView.viewpoint.clone();
+                      appConfig.sceneView.container = appConfig.container;
+                      appConfig.activeView = appConfig.sceneView;
+                      swapButton.value = "2D";
+                    }
+                  }
+
+                  // convenience function for creating a 2D or 3D view
+                  function createView(params, type) {
+                    var view;
+                    var is2D = type === "2d";
+                    if (is2D) {
+                      view = new MapView(params);
+                      return view;
+                    } else {
+                      view = new SceneView(params);
+                    }
+                    return view;
+                  }
+
+                  document.getElementById('cardToggle2').addEventListener('change', function(e) {
+                  if($('#cardToggle2').prop('checked')){
+
+                    //alert("1");
+                    //show_export()
+                    window.localStorage.setItem('D', '3D');
+                    location.reload();
+
+                    }
+                    else {
+
+                      //view.ui.remove(print, "top-right");
+                      window.localStorage.setItem('D', '2D');
+                      location.reload();
+
+                    }
+
+                });
+
+      
+                document.getElementById('cardToggle1').addEventListener('change', function(e) {
+                  if($('#cardToggle1').prop('checked')){
+
+                    //alert("1");
+                    show_export()
+
+                    }
+                    else {
+
+                      view.ui.remove(print, "top-right");
+
+                    }
+
+                });
+
+               async function show_export(){
+
+                   await view.when(function () {
+                      print = new Print({
+                        view: view,
+                        allowedLayouts: ["a3-landscape", "a3-portrait"],
+                        // specify your own print service
+                        printServiceUrl:
+                          "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+                      });
+
+                      // Add widget to the top right corner of the view
+                      view.ui.add(print, "top-right");
+
+                      // use a requestInterceptor to monitor the print widget
+                      // for print completion
+                      esriConfig.request.interceptors.push({
+                        // set the `urls` property to the URL of the print service so that this
+                        // interceptor only applies to requests made to the print service URL
+                        urls: print.printServiceUrl,
+                        // use the AfterInterceptorCallback to interogate the exportedLinks property
+                        after: function(response) {
+                          console.log("exportedLinks: ", print.exportedLinks.items[0]);
+                        }
+                      });
+                  });
+
+                  }
+
+        
+        //hapaa
+
+        document.getElementById('cardToggle').addEventListener('change', function(e) {
+          if($('#cardToggle').prop('checked')){
+
+            add_basemap()
+
+            }
+            else {
+
+              remove_basemap()
+
+            }
+        });
+
+        function add_basemap(){
+
+         view.ui.add(basemapGallery, {
+            position: "bottom-left",
+            expandIconClass: "esri-icon-layer-list",
+            expanded: true
+          });
+
+        }
+
+         function remove_basemap(){
+
+           view.ui.remove(basemapGallery, {
+              position: "bottom-left",
+              expandIconClass: "esri-icon-layer-list",
+              expanded: true
+            });
+
+          }
+
+        var basemapGallery = new BasemapGallery({
           view: view
         });
 
+      
         // Add the widget to the top-right corner of the view
-        view.ui.add(basemapGallery, {
-          position: "top-right"
-        });
+         
+        const clusterConfig = {
+          type: "cluster",
+          clusterRadius: "100px",
+          // {cluster_count} is an aggregate field containing
+          // the number of features comprised by the cluster
+          popupTemplate: {
+            title: "Cluster summary",
+            content: "This cluster represents {cluster_count} collected data.",
+            fieldInfos: [{
+              fieldName: "cluster_count",
+              format: {
+                places: 0,
+                digitSeparator: true
+              }
+            }]
+          },
+          clusterMinSize: "24px",
+          clusterMaxSize: "60px",
+          labelingInfo: [{
+            deconflictionStrategy: "none",
+            labelExpressionInfo: {
+              expression: "Text($feature.cluster_count, '#,###')"
+            },
+            symbol: {
+              type: "text",
+              color: "#004a5d",
+              font: {
+                weight: "bold",
+                family: "Noto Sans",
+                size: "12px"
+              }
+            },
+            labelPlacement: "center-center",
+          }]
+        };
+
     
     //declare a graphic array collection
     var graphicCollection = [];
@@ -3734,16 +4815,11 @@
     
     //loadCountries();
 
-    
-
     if(window.localStorage.getItem("Permission") != 0){
       get_all_projects_forms.get_projects_forms(window.localStorage.getItem("CurrentProject"),window.localStorage.getItem("CurrentProjectName") )
       loadMap();
     }
 
-    
-    
-    
     function loadMap(){
 
       var headers_fields = [];
@@ -3753,14 +4829,17 @@
       var final_data = [];
 
       const CurrentProjectForm = window.localStorage.getItem("CurrentProjectForm");
+      const CurrentProjectCollection = window.localStorage.getItem("MainForm");
+   
 
-      axios.get('https://odk-project-viewer.herokuapp.com/get_all_project_map_data/'+ CurrentProject +'/'+ CurrentProjectForm +'/'+ Token +'').then(response => {
+      axios.get('http://localhost:3000/get_all_data_for_map/'+CurrentProjectForm+'/'+ CurrentProjectCollection +'').then(response => {
               var projects_data = response.data;
               var collected_data = projects_data.length;
 
               //$( ".data_collected" ).html(collected_data);
               //$(".number_collectors").html(window.localStorage.getItem("TotalProjectCollectors"));
 
+              console.log(collected_data);
             
               $.each(projects_data[0], function (key, value) {
 
@@ -3782,8 +4861,6 @@
                    headers_fields.push(fields)
                    headers_fields_info.push(field_info);
 
-                   
-
               });
 
              
@@ -3803,7 +4880,8 @@
 
                 // });
 
-               var points = results.gps.coordinates;
+               console.log("Project Data", results.length);
+               //var points = results.gps.coordinates;
                var project_details = results;
 
                 final_point_data.push(project_details)
@@ -3813,10 +4891,10 @@
 
                // console.log(JSON.stringify(results).replace(/\"/g, ""));
 
-                
-
+          
               });
 
+              
              // console.log(final_data);
 
               final_data_details = []
@@ -3827,7 +4905,6 @@
                 final_data_details.push(final_data[k])
 
 
-
                 }
 
                 //console.log(final_data_details);
@@ -3836,47 +4913,66 @@
 
                 var json_replaced = final_point_data[i];
 
-                
+              
 
                 var point = {
                   type: "point", // autocasts as new Point()
-                  x: final_point_data[i].gps.coordinates[0],
-                  y: final_point_data[i].gps.coordinates[1]
+                  x: final_point_data[i]['gps-Longitude'],
+                  y: final_point_data[i]['gps-Latitude']
                 };
                 //hapa
+                
+
                 delete json_replaced.gps;
 
-                const json = JSON.stringify(json_replaced);
+                 const json = JSON.stringify(json_replaced);
 
-                const passWithString = JSON.parse(json, (key, val) => (
+                 const passWithString = JSON.parse(json, (key, val) => (
                   typeof val !== 'object' && val !== null ? String(val) : val
-                ));
+                 ));
 
-                var polygonGraphic = new Graphic({
+                 var polygonGraphic = new Graphic({
                     geometry: point,
                     attributes: passWithString
                   });
       
+                  //var pp = keys[i].toString();
+
+                 // console.log("Data", keys[i].includes('photo'));
+                  //if(keys[i].includes("photo")){
+                   
+                     //   console.log("Photoo",keys[i]);
+
+                 // }
                  // console.log(JSON.stringify(json_replaced))
 
                   
-                graphicCollection.push(polygonGraphic); //adding to collection array
+                 graphicCollection.push(polygonGraphic); //adding to collection array
 
+                
                // console.log(final_point_data);
                 
 
               }
 
               
+              
 
               createLayer(headers_fields,headers_fields_info,graphicCollection);
-              
+              image_gallery(projects_data)
             })
         
           }
 
+              async function image_gallery(projects_data){
+
+                 console.log(projects_data);
+
+              }
         
              function createLayer(headers_field,headers_field_info,data){
+              
+                 
 
                     // Set up popup template for the data point layers
                   var fieldTemplate = {
@@ -3894,20 +4990,69 @@
                       fields: headers_field,
                       objectIdField: "__id", 
                       renderer: renderer, 
+                      featureReduction: clusterConfig,
                       popupTemplate: fieldTemplate
                     });
 
                     const query = layer.createQuery();
 
-                    layer.queryFeatures(query).then(function(results){
+                    /*layer.queryFeatures(query).then(function(results){
                       const features = results.features;
                       view.goTo(features[0].geometry);
+                    });*/
+
+                    
+
+                    const infoDiv = document.getElementById("infoDiv");
+                    view.ui.add(new Expand({
+                      view: view,
+                      content: infoDiv,
+                      expandIconClass: "esri-icon-layer-list",
+                      expanded: true
+                    }), "top-left");
+
+                    const toggleButton = document.getElementById("cluster");
+
+                    // To turn off clustering on a layer, set the
+                    // featureReduction property to null
+                    toggleButton.addEventListener("click", () => {
+                      let fr = layer.featureReduction;
+                      layer.featureReduction = fr && fr.type === "cluster" ? null : clusterConfig;
+                      toggleButton.innerText = toggleButton.innerText === "Enable Clustering" ? "Disable Clustering" : "Enable Clustering";
                     });
                     
+                    
                     map.add(layer);
+                    setTimeout(function(){ zoomToLayer(layer) }, 1800);
+                    
+                    
+                    
                 }
-    });
+
+                
+
+                function zoomToLayer(layer) {
+                    return layer.queryExtent().then((response) => {
+                      view.goTo(response.extent)
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                    });
+                  }
+
+            });
     
+            
+
+            if(window.localStorage.getItem('CollectionChnageStatus')==0){
+
+              $(".show-data").hide();
+              $("#instructions").show();
+              $("#instructions").show();
+
+              }
+
+
     </script>
 
 
