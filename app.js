@@ -122,10 +122,7 @@ await request(options, function (error, response) {
     for (i = 0; i < projects.length; i++) {
 
          get_forms(projects[i],projects)
-
-
     } 
-
 }); 
 
 }
@@ -335,7 +332,7 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
 
                  let stripped_column2 = stripped_column.split("-").pop();
 
-                 col.push(stripped_column2);
+                 col.push(stripped_column);
                 // const rows = df.toRows();
                  // console.log(rows[0]);
                //})
@@ -368,7 +365,6 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
            //console.log("Array Array",JSON.stringify(ddd));
            
            const pairs = df.toPairs(); 
-
 
            main_file = new dataForge.DataFrame({
                columnNames: col,
@@ -495,7 +491,7 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
                 const stripped_column = value.split("-").pop();
                 let stripped_column2 = stripped_column.split("-").pop();
                 
-                 col_others.push(stripped_column2);
+                 col_others.push(stripped_column);
                 // const rows = df.toRows();
                  // console.log(rows[0]);
  
@@ -776,12 +772,12 @@ async function for_download(folder_directory,file,to_join_data){
 }
 
 
-cron.schedule('*/10 * * * *', () => {
+cron.schedule('*/20 * * * *', () => {
   get_all_projects();
   console.log("Run after 2 minutes");
 });
 
-cron.schedule('*/15 * * * *', () => {
+cron.schedule('*/40 * * * *', () => {
   insert_to_db();
   console.log("Run after 4 minutes");
 });
