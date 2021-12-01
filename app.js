@@ -13,6 +13,7 @@ const cron = require("node-cron");
 const path = require('path');
 
 var unzipper = require('unzipper');
+var unzip = require('unzip-stream');
 var etl = require('etl');
 const extract = require('extract-zip');
 const {spawn} = require('child_process');
@@ -149,11 +150,13 @@ async function get_forms(projects, project_array){
 
               //get_forms(forms[i])
               download_zip(forms[i].xmlFormId,forms[i].projectId);
+              //save_image(forms[i].xmlFormId,forms[i].projectId);
 
-            // var ff = forms[i];
+              
+              //var ff = forms[i];
             
 
-            //console.log(sd);
+             //console.log(sd);
             formID.push(forms);
             //console.log("FormID",JSON.stringify(ff));
             //console.log("Formss",forms);
@@ -179,6 +182,7 @@ async function get_forms(projects, project_array){
 
 
 }
+
 
 async function download_zip(formID,projectID){
 
@@ -225,9 +229,8 @@ async function download_zip(formID,projectID){
       });
 
     }
-//call_matlab(formID)
 
-});
+  });
 
 }
 
@@ -272,8 +275,7 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
    var db_customized_name =  db_orinal_name.replace(/\s+/g,"_");
 
    let db_name = "mongodb://localhost:27017/"+ db_customized_name +"";
- 
-   //Na hapa
+
    
    if(files.length > 1){
 
@@ -381,22 +383,21 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
           
            if(main_table.length != 0){
 
-           MongoClient.connect(db_name, function(err, db) {
-             if (err) throw err;
-             var dbo = db.db(db_customized_name);
+             MongoClient.connect(db_name, function(err, db) {
+               if (err) throw err;
+               var dbo = db.db(db_customized_name);
 
-             dbo.collection(table_name).drop(function (err, result) {
-              if (err === 26){
+              dbo.collection(table_name).drop(function (err, result) {
+               if (err === 26){
                   return false;
-              }
-              if (result) console.log("Collection successfully deleted.");
+                }
+               if (result) console.log("Collection successfully deleted.");
               
-              dbo.createCollection(table_name, function(errr, res) {
+               dbo.createCollection(table_name, function(errr, res) {
                 if(errr == 48){
                   return false;
                   } else {
 
-                  
                       dbo.collection(table_name).insertMany(main_table);
                       //dbo.collection(table_name).getCollection(table_name).update({}, {$unset: {fieldname: "KEY"}});
                       //for_download(folder_directory,file,to_join_data)
@@ -710,7 +711,7 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
                 });
               });
 
-           });
+            });
 
            store_images(project_id, form_id,to_join_data)
 
@@ -725,18 +726,74 @@ async function count_validate_forms(project_id,form_id,fd,fm,db){
 async function store_images(project_id, form_id,data_array){
 
  //fs.writeFileSync('student-2.json', JSON.stringify(data_array));
+ 
+  let projects = [];
 
-  await data_array.forEach(function callback(value, index) {   
+  await data_array.forEach(function callback(value, index) {  
 
-      if(value.AttachmentsPresent != '0'){
+    if(value.AttachmentsPresent != '0'){
 
-            console.log(project_id,form_id,value.AttachmentsPresent);
-          
+         projects.push({project : project_id, form_id : form_id});
+    }
+  });
+  
+  let pp = projects.length;
 
-      }
+   if(pp != 0){
 
-    });
-       
+   download_images(projects[0].project,form_id)
+   //setTimeout(function(){ console.log("Wait wait"); }, 55000);  
+     // download_images(projects[0].project,form_id)
+
+   }
+
+}
+
+ async function download_images(project_id,form_id){
+  console.log("ProjectID", project_id);     
+  const Downloader = require('nodejs-file-downloader');
+
+  (async () => {
+
+      //The response object is a node response(http.IncomingMessage)
+      function onResponse(response) {
+          //Now you can do something with the response, like check the headers
+          if (response.headers['content-length'] > 50000) {
+             console.log('File is too big!', response.headers['content-length'])
+           // return false;//If you return false, the download process is stopped, and downloader.download() is resolved.
+          }
+
+          //Returning any other value, including undefined, will tell the downloader to proceed as usual.
+        }
+
+    const downloader = new Downloader({     
+       url: 'https://odk-server.icipe.org/v1/projects/'+project_id+'/forms/'+form_id+'/submissions.csv.zip?attachments=true',
+       headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic anRhbnVpQGljaXBlLm9yZzpBcmMxMC42R0lT',
+        'Cookie': '__Host-session=ZG69gx3Lmz3GBxWGcB8PIn5ITBP7!3PYolCTc9FCOj0%24zso2hXmtTQeMS43AAtPN; __csrf=mlNH1CsBb31Qw1GFBCV3v124p0mXKZVu8K!dwkpSRdjHRlBiiJTGs1blAssVghCp'
+       },
+       directory: "./images_files/",//Sub directories will also be automatically created if they do not exist.
+       cloneFiles:false,
+       maxAttempts:1,
+       onResponse,  
+       onProgress:function(percentage,chunk,remainingSize){//Gets called with each chunk.
+            console.log('% ',percentage)   
+            console.log('Current chunk of data: ',chunk)   
+            console.log('Remaining bytes: ',remainingSize)   
+         }         
+       })  
+
+         try {
+             setTimeout(function(){ }, 380000);
+             await downloader.download();
+            console.log('All done');   
+
+          } catch (error) {
+            console.log(error)
+          }
+
+    })();  
 
 }
 
@@ -772,14 +829,14 @@ async function for_download(folder_directory,file,to_join_data){
 }
 
 
-cron.schedule('*/20 * * * *', () => {
+cron.schedule('*/30 * * * *', () => {
   get_all_projects();
-  console.log("Run after 2 minutes");
+  //console.log("Run after 2 minutes");
 });
 
-cron.schedule('*/40 * * * *', () => {
+cron.schedule('*/50 * * * *', () => {
   insert_to_db();
-  console.log("Run after 4 minutes");
+  //console.log("Run after 4 minutes");
 });
 
 app.get('/', function(req, res) {
@@ -795,6 +852,13 @@ app.get('/home', function(req, res) {
 app.get('/test_data', function(req, res) {
   //res.sendFile(path.join(__dirname + '/home.html'));
   insert_to_db();
+  //for_download();
+}); 
+
+
+app.get('/test_save_data', function(req, res) {
+  //res.sendFile(path.join(__dirname + '/home.html'));
+  get_all_projects();
   //for_download();
 });
 
